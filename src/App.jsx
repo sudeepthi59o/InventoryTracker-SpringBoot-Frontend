@@ -15,13 +15,13 @@ function App() {
       <Router>
         <Routes>
           <Route path="/login" element={<LoginPage/>}/>
-          <Route path="/register" element={<RegisterPage/>}/>
+          <Route path="/register" element={<PrivateRoute adminOnly={true} element={<RegisterPage/>}/>}/>
           <Route path="/products" element={<ProductListPage/>}/>
           <Route path="/categories" element={<CategoryListPage/>}/>
           <Route path="/supplier" element={<SupplierListPage/>}/>
-          <Route path="/add-product" element={<ProductFormPage/>}/>
-          <Route path="/edit-product:id" element={<ProductFormPage/>}/>
-          <Route path="/delete-product:id" element={<ProductFormPage/>}/>
+          <Route path="/add-product" element={<PrivateRoute adminOnly={true} element={<ProductFormPage/>}/>}/>
+          <Route path="/edit-product:id" element={<PrivateRoute adminOnly={true} element={<ProductFormPage/>}/>}/>
+          <Route path="/delete-product:id" element={<PrivateRoute adminOnly={true} element={<ProductFormPage/>}/>}/>
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </Router>
