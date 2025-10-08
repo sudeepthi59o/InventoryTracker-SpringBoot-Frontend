@@ -3,12 +3,15 @@ import api from "../api/api";
 import { useForm, Controller } from "react-hook-form";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../components/auth/AuthContext";
+import Product from "./Product";
 
 function ProductListPage() {
     const { auth } = useContext(AuthContext);
     const [products, setProducts] = useState([]);
     const [categories, setCategories] = useState([]);
     const [suppliers, setSuppliers] = useState([]);
+    const [loading, setLoading] = useState(false);
+
 
     const { control, watch} = useForm({
     defaultValues: {
@@ -20,16 +23,19 @@ function ProductListPage() {
   const filters = watch();
 
 
-    useEffect(() => {async function fetchData() {
-        try {
-        const response = await api.get('/product/filter', { params: filters });
-        setProducts(response.data);
-      } catch (error) {
-        console.error('Error fetching products:', error);
-      }
+    async function fetchData() {
+        setLoading(true);
+    try {
+      const response = await api.get('/product/filter', { params: filters });
+      console.log("********");
+      console.log(response);
+      setProducts(response.data);
+    } catch (error) {
+      console.error('Error fetching products:', error);
+    } finally {
+      setLoading(false);
+    }
     };
-    fetchData();    
-    },[filters])
 
     useEffect(() => { async function fetchSelectData() {
         try {
@@ -37,10 +43,13 @@ function ProductListPage() {
           api.get('/category'),
           api.get('/supplier')
         ]);
-        setCategories(categoryResponse.data);
+        console.log("********");
         console.log(categoryResponse);
-        setSuppliers(supplierResponse.data);
+        console.log("********");
         console.log(supplierResponse);
+        setCategories(categoryResponse.data);
+        setSuppliers(supplierResponse.data);
+        
       } catch (error) {
         console.error('Error fetching categories or suppliers:', error);
       }
@@ -87,17 +96,16 @@ function ProductListPage() {
             )}
           />
         </div>
+
+      <button type="button" onClick={fetchData}>
+          Show Filtered Data
+        </button>
       </form>
           
         </div>
             <ul>
                 {products.map((product) => {
-                <li key={product.id}>{product.name} - {product.category} - {product.supplier}{auth.role === 'admin' && (
-              <div>
-                <Link to={`/edit-product/${product.id}`}>Edit</Link>
-                <Link to={`/delete-product/${product.id}`}>Delete</Link>
-              </div>
-            )}</li>})}
+                return <li key={product.id}><Product product={product}/></li>})}
             </ul>
 
             {auth.role === 'admin' && (
