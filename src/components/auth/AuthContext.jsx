@@ -33,6 +33,7 @@ export const AuthProvider = ({children}) => {
         localStorage.removeItem('authData');
 
         setAuth({isAuthenticated: false, role: ''})
+
     }
 
     return (

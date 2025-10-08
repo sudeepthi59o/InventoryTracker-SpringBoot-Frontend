@@ -6,14 +6,14 @@ import { AuthContext } from "../components/auth/AuthContext";
 import Product from "./Product";
 
 function ProductListPage() {
-    const { auth } = useContext(AuthContext);
+    const { logout, auth } = useContext(AuthContext);
     const [products, setProducts] = useState([]);
     const [categories, setCategories] = useState([]);
     const [suppliers, setSuppliers] = useState([]);
     const [loading, setLoading] = useState(false);
 
 
-    const { control, watch} = useForm({
+    const { register, watch, handleSubmit} = useForm({
     defaultValues: {
       category: '',
       supplier: ''
@@ -27,8 +27,6 @@ function ProductListPage() {
         setLoading(true);
     try {
       const response = await api.get('/product/filter', { params: filters });
-      console.log("********");
-      console.log(response);
       setProducts(response.data);
     } catch (error) {
       console.error('Error fetching products:', error);
@@ -43,10 +41,6 @@ function ProductListPage() {
           api.get('/category'),
           api.get('/supplier')
         ]);
-        console.log("********");
-        console.log(categoryResponse);
-        console.log("********");
-        console.log(supplierResponse);
         setCategories(categoryResponse.data);
         setSuppliers(supplierResponse.data);
         
@@ -57,52 +51,50 @@ function ProductListPage() {
     fetchSelectData();
     }, [])
 
+    if (loading) return <p>Loading products...</p>;
+
     return (
-        <div>
-            <h1>Product List</h1>
+    <div>
+      <h1>Product List</h1>
 
+      <div>
+        <button onClick={logout}>Logout</button>
+        <Link to="/categories">
+          <button>Categories</button>
+        </Link>
+        <Link to="/suppliers">
+          <button>Suppliers</button>
+        </Link>
+      </div>
+
+      <form onSubmit={handleSubmit(() => fetchData(filters))}>
         <div>
-      <form>
-        <div>
-          <Controller
-            name="category"
-            control={control}
-            render={({ field }) => (
-              <select {...field}>
-                <option value="">Select Category</option>
-                {categories.map((category) => (
-                  <option key={category.id} value={category.name}>
-                    {category.name}
-                  </option>
-                ))}
-              </select>
-            )}
-          />
+          <label>Select Category</label>
+          <select {...register('category')}>
+            <option value="">Select Category</option>
+            {categories.map((category) => (
+              <option key={category.id} value={category.name}>
+                {category.name}
+              </option>
+            ))}
+          </select>
         </div>
 
         <div>
-          <Controller
-            name="supplier"
-            control={control}
-            render={({ field }) => (
-              <select {...field}>
-                <option value="">Select Supplier</option>
-                {suppliers.map((supplier) => (
-                  <option key={supplier.id} value={supplier.name}>
-                    {supplier.name}
-                  </option>
-                ))}
-              </select>
-            )}
-          />
+          <label>Select Supplier</label>
+          <select {...register('supplier')}>
+            <option value="">Select Supplier</option>
+            {suppliers.map((supplier) => (
+              <option key={supplier.id} value={supplier.name}>
+                {supplier.name}
+              </option>
+            ))}
+          </select>
         </div>
 
-      <button type="button" onClick={fetchData}>
-          Show Filtered Data
-        </button>
+        <button type="submit">Show Filtered Data</button>
       </form>
           
-        </div>
             <ul>
                 {products.map((product) => {
                 return <li key={product.id}><Product product={product}/></li>})}

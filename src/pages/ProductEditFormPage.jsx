@@ -1,15 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { useNavigate, useParams } from 'react-router-dom';
 import api from '../api/api';
-import { useNavigate } from 'react-router-dom';
 
-function ProductFormPage() {
+function ProductEditFormPage() {
+  const { id } = useParams(); 
+  const navigate = useNavigate();
   const [categories, setCategories] = useState([]);
   const [suppliers, setSuppliers] = useState([]);
+  const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
-  const navigate = useNavigate();
 
   const {
     register,
@@ -19,64 +20,77 @@ function ProductFormPage() {
   } = useForm();
 
   useEffect(() => {
-    const fetchCategoriesAndSuppliers = async () => {
+    const fetchData = async () => {
       try {
         const categoryResponse = await api.get('/category');
         const supplierResponse = await api.get('/supplier');
+        const productResponse = await api.get(`/product/${id}`);
 
         setCategories(categoryResponse.data);
         setSuppliers(supplierResponse.data);
+        setProduct(productResponse.data);
+
+        reset({
+          name: productResponse.data.name,
+          price: productResponse.data.price,
+          quantity: productResponse.data.quantity,
+          categoryId: productResponse.data.categoryDTO.id,
+          supplierId: productResponse.data.supplierDTO.id,
+        });
+
       } catch (err) {
-        console.error('Failed to fetch categories and suppliers:', err);
-        setError('Failed to load categories or suppliers. Please try again later.');
+        console.error('Failed to fetch data:', err);
+        setError('Failed to load categories, suppliers, or product. Please try again later.');
       } finally {
         setLoading(false);
       }
     };
 
-    fetchCategoriesAndSuppliers();
-  }, []);
+    fetchData();
+  }, [id, reset]);
 
   const onSubmit = async (data) => {
     try {
       const categoryDTO = categories.find((category) => category.id === parseInt(data.categoryId));
       const supplierDTO = suppliers.find((supplier) => supplier.id === parseInt(data.supplierId));
 
-      const productData = {
+      const updatedProductData = {
         ...data,
         categoryDTO,  
-        supplierDTO,
+        supplierDTO, 
       };
 
-      const response = await api.post('/product', productData);
-      alert('Product added successfully');
-      reset();
-      navigate('/products');
+      await api.put(`/product/${id}`, updatedProductData);
+      alert('Product updated successfully');
+      navigate('/products'); 
     } catch (err) {
-      console.error('Failed to add product:', err);
-      alert('Error adding product. Please try again.');
+      console.error('Failed to update product:', err);
+      alert('Error updating product. Please try again.');
     }
   };
 
-  if (loading) return <p>Loading categories and suppliers...</p>;
+  if (loading) return <p>Loading categories, suppliers, and product...</p>;
   if (error) return <p>{error}</p>;
 
   return (
     <div>
-      <h2>Add New Product</h2>
+      <h2>Edit Product</h2>
       <form onSubmit={handleSubmit(onSubmit)}>
         <div>
           <label>Name</label>
           <input
             type="text"
-            {...register('name', { required: 'Product name is required', minLength: {
+            {...register('name', {
+              required: 'Product name is required',
+              minLength: {
                 value: 2,
                 message: 'Product name must be at least 2 characters',
               },
               maxLength: {
                 value: 100,
                 message: 'Product name must be less than 100 characters',
-              },})}
+              },
+            })}
           />
           {errors.name && <p>{errors.name.message}</p>}
         </div>
@@ -86,7 +100,10 @@ function ProductFormPage() {
           <input
             type="number"
             step={0.01}
-            {...register('price', { required: 'Product price is required', min: { value: 0, message: 'Price must be greater than 0' } })}
+            {...register('price', {
+              required: 'Product price is required',
+              min: { value: 0, message: 'Price must be greater than 0' },
+            })}
           />
           {errors.price && <p>{errors.price.message}</p>}
         </div>
@@ -95,7 +112,10 @@ function ProductFormPage() {
           <label>Quantity</label>
           <input
             type="number"
-            {...register('quantity', { required: 'Product quantity is required', min: { value: 1, message: 'Quantity must be at least 1' } })}
+            {...register('quantity', {
+              required: 'Product quantity is required',
+              min: { value: 1, message: 'Quantity must be at least 1' },
+            })}
           />
           {errors.quantity && <p>{errors.quantity.message}</p>}
         </div>
@@ -127,11 +147,11 @@ function ProductFormPage() {
         </div>
 
         <div>
-          <button type="submit">Add Product</button>
+          <button type="submit">Update Product</button>
         </div>
       </form>
     </div>
   );
 }
 
-export default ProductFormPage;
+export default ProductEditFormPage;

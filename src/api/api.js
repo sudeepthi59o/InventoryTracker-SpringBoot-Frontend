@@ -10,7 +10,7 @@ const api = axios.create({
   api.interceptors.request.use(
     (config) => {
   
-      let parsedAuth = null;
+    let parsedAuth = null;
 
     try {
       const authData = localStorage.getItem('authData');
@@ -31,7 +31,7 @@ const api = axios.create({
     (response) => response,
     (error) => {
       if (error.response && error.response.status === 401) {
-        localStorage.removeItem("authToken");
+        localStorage.removeItem("authData");
         window.location.href = "/login"; 
       }
       return Promise.reject(error);

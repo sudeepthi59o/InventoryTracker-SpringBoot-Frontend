@@ -1,5 +1,6 @@
 import { useContext } from "react"
 import { AuthContext } from "../components/auth/AuthContext"
+import { Navigate } from "react-router-dom";
 
 function PrivateRoute({element, adminOnly }) {
     const { auth } = useContext(AuthContext);
@@ -9,7 +10,7 @@ function PrivateRoute({element, adminOnly }) {
         <Navigate to="/login"/>
     }
 
-    if (adminOnly && auth.role !== 'ROLE_ADMIN') {
+    if (adminOnly && auth.role !== 'ADMIN') {
     return <Navigate to="/products" />;
   }
 
