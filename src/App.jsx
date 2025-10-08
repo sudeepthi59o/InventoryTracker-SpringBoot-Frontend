@@ -8,6 +8,7 @@ import CategoryListPage from './pages/CategoryListPage';
 import SupplierListPage from './pages/SupplierListPage';
 import RegisterPage from './pages/RegisterPage';
 import NotFoundPage from './pages/NotFoundPage';
+import PrivateRoute from './pages/PrivateRoute';
 
 function App() {
   return (
