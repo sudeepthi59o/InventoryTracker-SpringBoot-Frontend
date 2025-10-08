@@ -9,10 +9,19 @@ const api = axios.create({
 
   api.interceptors.request.use(
     (config) => {
-      const token = localStorage.getItem("authToken");
-      if (token) {
-        config.headers["Authorization"] = `Bearer ${token}`;
-      }
+  
+      let parsedAuth = null;
+
+    try {
+      const authData = localStorage.getItem('authData');
+      parsedAuth = authData ? JSON.parse(authData) : null;
+    } catch (e) {
+      console.error('Error parsing authData from localStorage', e);
+    }
+
+    if (parsedAuth && parsedAuth.token) {
+      config.headers["Authorization"] = `Bearer ${parsedAuth.token}`;
+    }
       return config;
     },
     (error) => Promise.reject(error)

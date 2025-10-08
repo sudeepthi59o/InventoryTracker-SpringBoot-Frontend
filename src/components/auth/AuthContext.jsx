@@ -7,17 +7,22 @@ export const AuthProvider = ({children}) => {
     const [auth, setAuth] = useState({isAuthenticated: false, role: ''})
 
     useEffect( ()=> {
-        const token = localStorage.getItem('authToken')
-        if(token)
-        {
-            setAuth({ isAuthenticated: true, role: 'user' });
-        }
-    }, []);
+        const authData = localStorage.getItem('authData');
+  
+        if (authData) {
+            const parsedAuth = JSON.parse(authData);
+
+            if (parsedAuth.token) {
+            setAuth({
+                isAuthenticated: true,
+                role: parsedAuth.role || 'USER',  // Default to 'user' if role is not provided
+            });
+    }}}, []);
 
 
     const login = (token, role) => {
 
-    localStorage.setItem('authToken',token);
+    localStorage.setItem('authData', JSON.stringify({ token: token, role: role }));
 
     setAuth({isAuthenticated: true, role: role})
     }
@@ -25,7 +30,7 @@ export const AuthProvider = ({children}) => {
 
     const logout = () => {
 
-        localStorage.removeItem('authToken');
+        localStorage.removeItem('authData');
 
         setAuth({isAuthenticated: false, role: ''})
     }

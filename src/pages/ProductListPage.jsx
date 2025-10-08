@@ -108,7 +108,7 @@ function ProductListPage() {
                 return <li key={product.id}><Product product={product}/></li>})}
             </ul>
 
-            {auth.role === 'admin' && (
+            {auth.role === 'ADMIN' && (
         <Link to="/add-product">
           <button>Add New Product</button>
         </Link>

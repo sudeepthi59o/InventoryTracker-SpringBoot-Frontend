@@ -21,8 +21,8 @@ function App() {
           <Route path="/categories" element={<CategoryListPage/>}/>
           <Route path="/supplier" element={<SupplierListPage/>}/>
           <Route path="/add-product" element={<PrivateRoute adminOnly={true} element={<ProductFormPage/>}/>}/>
-          <Route path="/edit-product:id" element={<PrivateRoute adminOnly={true} element={<ProductFormPage/>}/>}/>
-          <Route path="/delete-product:id" element={<PrivateRoute adminOnly={true} element={<ProductFormPage/>}/>}/>
+          <Route path="/edit-product/:id" element={<PrivateRoute adminOnly={true} element={<ProductFormPage/>}/>}/>
+          <Route path="/delete-product/:id" element={<PrivateRoute adminOnly={true} element={<ProductFormPage/>}/>}/>
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </Router>
