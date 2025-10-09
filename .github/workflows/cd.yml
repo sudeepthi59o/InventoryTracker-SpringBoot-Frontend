@@ -18,16 +18,13 @@ jobs:
                   aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
                   aws-region: ${{ secrets.AWS_REGION }}
 
-            - name: Download build artifact
+            - name: Download build artifact from another repo or specific run
               uses: actions/download-artifact@v4
               with:
                   name: react-build
+                  github-token: ${{ secrets.GH_PAT }}
+                  repository: sudeepthi59o/InventoryTracker-SpringBoot-Frontend
                   path: ./dist
-
-            - name: List contents of dist/
-              run: |
-                  echo "Listing contents of dist/ directory:"
-                  ls -R ./dist
 
             - name: Sync build to S3
               run: |
