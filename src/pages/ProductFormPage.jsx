@@ -58,51 +58,69 @@ function ProductFormPage() {
     }
   };
 
-  if (loading) return <p>Loading categories and suppliers...</p>;
-  if (error) return <p>{error}</p>;
+  if (loading) return <p className="text-center text-lg font-medium">Loading categories and suppliers...</p>;
+  if (error) return <p className="text-center text-lg text-red-600">{error}</p>;
 
   return (
-    <div>
-      <h2>Add New Product</h2>
+    <div className="max-w-3xl mx-auto p-8 bg-white shadow-md rounded-lg">
+      <h2 className="text-3xl font-semibold text-center text-blue-600 mb-6">Add New Product</h2>
+      
       <form onSubmit={handleSubmit(onSubmit)}>
-        <div>
-          <label>Name</label>
+        {/* Product Name */}
+        <div className="mb-4">
+          <label htmlFor="name" className="block text-lg font-medium text-gray-700">Name</label>
           <input
+            id="name"
             type="text"
-            {...register('name', { required: 'Product name is required', minLength: {
-                value: 2,
-                message: 'Product name must be at least 2 characters',
-              },
-              maxLength: {
-                value: 100,
-                message: 'Product name must be less than 100 characters',
-              },})}
+            className="w-full p-3 border border-gray-300 rounded-md mt-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            {...register('name', { 
+              required: 'Product name is required', 
+              minLength: { value: 2, message: 'Product name must be at least 2 characters' },
+              maxLength: { value: 100, message: 'Product name must be less than 100 characters' },
+            })}
           />
-          {errors.name && <p>{errors.name.message}</p>}
+          {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name.message}</p>}
         </div>
 
-        <div>
-          <label>Price</label>
+        {/* Product Price */}
+        <div className="mb-4">
+          <label htmlFor="price" className="block text-lg font-medium text-gray-700">Price</label>
           <input
+            id="price"
             type="number"
             step={0.01}
-            {...register('price', { required: 'Product price is required', min: { value: 0, message: 'Price must be greater than 0' } })}
+            className="w-full p-3 border border-gray-300 rounded-md mt-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            {...register('price', { 
+              required: 'Product price is required',
+              min: { value: 0, message: 'Price must be greater than 0' },
+            })}
           />
-          {errors.price && <p>{errors.price.message}</p>}
+          {errors.price && <p className="text-red-500 text-sm mt-1">{errors.price.message}</p>}
         </div>
 
-        <div>
-          <label>Quantity</label>
+        {/* Product Quantity */}
+        <div className="mb-4">
+          <label htmlFor="quantity" className="block text-lg font-medium text-gray-700">Quantity</label>
           <input
+            id="quantity"
             type="number"
-            {...register('quantity', { required: 'Product quantity is required', min: { value: 1, message: 'Quantity must be at least 1' } })}
+            className="w-full p-3 border border-gray-300 rounded-md mt-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            {...register('quantity', { 
+              required: 'Product quantity is required',
+              min: { value: 1, message: 'Quantity must be at least 1' },
+            })}
           />
-          {errors.quantity && <p>{errors.quantity.message}</p>}
+          {errors.quantity && <p className="text-red-500 text-sm mt-1">{errors.quantity.message}</p>}
         </div>
 
-        <div>
-          <label>Category</label>
-          <select {...register('categoryId', { required: 'Category is required' })}>
+        {/* Category Selection */}
+        <div className="mb-4">
+          <label htmlFor="categoryId" className="block text-lg font-medium text-gray-700">Category</label>
+          <select
+            id="categoryId"
+            className="w-full p-3 border border-gray-300 rounded-md mt-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            {...register('categoryId', { required: 'Category is required' })}
+          >
             <option value="">Select a Category</option>
             {categories.map((category) => (
               <option key={category.id} value={category.id}>
@@ -110,12 +128,17 @@ function ProductFormPage() {
               </option>
             ))}
           </select>
-          {errors.categoryId && <p>{errors.categoryId.message}</p>}
+          {errors.categoryId && <p className="text-red-500 text-sm mt-1">{errors.categoryId.message}</p>}
         </div>
 
-        <div>
-          <label>Supplier</label>
-          <select {...register('supplierId', { required: 'Supplier is required' })}>
+        {/* Supplier Selection */}
+        <div className="mb-4">
+          <label htmlFor="supplierId" className="block text-lg font-medium text-gray-700">Supplier</label>
+          <select
+            id="supplierId"
+            className="w-full p-3 border border-gray-300 rounded-md mt-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            {...register('supplierId', { required: 'Supplier is required' })}
+          >
             <option value="">Select a Supplier</option>
             {suppliers.map((supplier) => (
               <option key={supplier.id} value={supplier.id}>
@@ -123,11 +146,17 @@ function ProductFormPage() {
               </option>
             ))}
           </select>
-          {errors.supplierId && <p>{errors.supplierId.message}</p>}
+          {errors.supplierId && <p className="text-red-500 text-sm mt-1">{errors.supplierId.message}</p>}
         </div>
 
-        <div>
-          <button type="submit">Add Product</button>
+        {/* Submit Button */}
+        <div className="mb-4">
+          <button
+            type="submit"
+            className="w-full bg-blue-600 text-white py-3 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200"
+          >
+            Add Product
+          </button>
         </div>
       </form>
     </div>
