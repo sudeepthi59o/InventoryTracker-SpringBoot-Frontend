@@ -29,6 +29,7 @@ export const AuthProvider = ({children}) => {
 
 
     const logout = () => {
+        console.log("logout called");
 
         localStorage.removeItem('authData');
 

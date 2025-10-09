@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import api from "../api/api";
 import { useForm, Controller } from "react-hook-form";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../components/auth/AuthContext";
 import Product from "./Product";
 
@@ -11,6 +11,7 @@ function ProductListPage() {
     const [categories, setCategories] = useState([]);
     const [suppliers, setSuppliers] = useState([]);
     const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
 
 
     const { register, watch, handleSubmit} = useForm({
@@ -49,7 +50,14 @@ function ProductListPage() {
       }
     };
     fetchSelectData();
-    }, [])
+    }, []);
+
+
+  useEffect(() => {
+    if (!auth.isAuthenticated) {
+      navigate('/login');
+    }
+  }, [auth.isAuthenticated, navigate]);
 
     if (loading) return <p>Loading products...</p>;
 

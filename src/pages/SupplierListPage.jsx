@@ -2,11 +2,13 @@ import React, { useContext, useEffect, useState } from 'react';
 import api from '../api/api'; 
 import Supplier from './Supplier';
 import { AuthContext } from '../components/auth/AuthContext';
+import { Link, useNavigate } from 'react-router-dom';
 
 function SupplierListPage() {
   const [suppliers, setSuppliers] = useState([]);
   const [loading, setLoading] = useState(true);
-  const { logout } = useContext(AuthContext)
+  const { logout, auth } = useContext(AuthContext)
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchSuppliers = async () => {
@@ -23,6 +25,12 @@ function SupplierListPage() {
 
     fetchSuppliers();
   }, []);
+
+  useEffect(() => {
+    if (!auth.isAuthenticated) {
+      navigate('/login');
+    }
+  }, [auth.isAuthenticated, navigate]);
 
   if (loading) return <p>Loading suppliers...</p>;
 
