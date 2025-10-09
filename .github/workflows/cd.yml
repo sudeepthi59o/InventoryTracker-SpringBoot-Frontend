@@ -11,6 +11,9 @@ jobs:
             - name: Checkout code
               uses: actions/checkout@v2
 
+            - name: List files in current directory
+              run: ls -R
+
             - name: Set up AWS CLI
               uses: aws-actions/configure-aws-credentials@v1
               with:
@@ -20,6 +23,9 @@ jobs:
 
             - name: Download build artifact
               uses: actions/download-artifact@v4
+              with:
+                  name: react-build
+                  path: dist/
 
             - name: Sync build to S3
               run: |
